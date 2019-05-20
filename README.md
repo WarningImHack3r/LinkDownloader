@@ -12,5 +12,5 @@ Features :
 
 Change line 16 and line 38 to specify your paths
 
-Please ensure you got 'wget', 'unrar', 'unzip' and 'transmission-cli' installed.
-You can do this by typing 'sudo apt-get install <package>' on your Linux machine.
+Please ensure you got `wget`, `unrar`, `unzip` and `transmission-cli` installed.
+You can do this by typing `sudo apt-get install <package>` on your Linux machine.
