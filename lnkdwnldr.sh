@@ -39,7 +39,10 @@ else
 		fi
 		echo -e -n ">> Précisez l'extension de fichier : "
 		read -r ext
-		$ext=${$ext/"."/""}
+		if [[ $ext == *"."*]]
+		then
+			$ext=${$ext/"."/""}
+		fi
 		if [ $ext != "mkv" ] && [ $ext != "avi" ] && [ $ext != "mp4" ] && [ $ext != "torrent" ]
 		then
 			path=~
@@ -47,7 +50,10 @@ else
 		else
 			echo -e -n ">> Quelle est la hauteur de trame du film ? "
 			read -r qua
-			$qua=${qua%p}
+			if [[ $qua == *"p"*]]
+			then
+				$qua=${qua%p}
+			fi
 			nom="[${qua}p] ${titre}"
 		fi
 		if [ $ext == "torrent" ]
@@ -94,7 +100,10 @@ else
 				ext="mkv"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				$qua=${qua%p}
+				if [[ $qua == *"p"*]]
+				then
+					$qua=${qua%p}
+				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
 				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
@@ -105,7 +114,10 @@ else
 				ext="avi"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				$qua=${qua%p}
+				if [[ $qua == *"p"*]]
+				then
+					$qua=${qua%p}
+				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
 				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
@@ -116,7 +128,10 @@ else
 				ext="mp4"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				$qua=${qua%p}
+				if [[ $qua == *"p"*]]
+				then
+					$qua=${qua%p}
+				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
 				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
