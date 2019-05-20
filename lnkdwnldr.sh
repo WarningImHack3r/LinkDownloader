@@ -6,6 +6,7 @@ ORANGE='\033[0;33m'
 YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+LIGHTBLUE='\033[1;34m'
 
 if [ $# -ne 1 ]
 then
@@ -14,11 +15,12 @@ else
 	regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 	lien=$1
 	path=/mnt/library/Films
+	filmPath="$path"
 	if [[ $lien =~ $regex ]]
 	then
 		clear
 		echo -e "${YELLOW}${BOLD}============================================================"
-		echo -e "                  ${RED}LINK DOWNLOADER V1.8"
+		echo -e "                  ${RED}LINK DOWNLOADER V2.0"
 		echo -e "${YELLOW}============================================================${NORMAL}"
 		echo -e "${YELLOW}>> Lien reçu : ${BOLD}${lien}${NORMAL}${NC}"
 		echo -e "${YELLOW}============================================================${NC}"
@@ -31,49 +33,57 @@ else
 		echo -e "${YELLOW}============================================================${NC}"
 		echo -e -n ">> Entrez le nom pour renommer le fichier : "
 		read -r titre
+		$titre=${titre%.*}
 		echo -e -n ">> Précisez l'extension de fichier : "
 		read -r ext
-		if [ $ext != "mkv" ] && [ $ext != "avi" ] && [ $ext != "mp4" ]
+		$ext=${$ext/"."/""}
+		if [ $ext != "mkv" ] && [ $ext != "avi" ] && [ $ext != "mp4" ] && [ $ext != "torrent" ]
 		then
 			path=~
 			nom="${titre}"
 		else
 			echo -e -n ">> Quelle est la hauteur de trame du film ? "
 			read -r qua
+			$qua=${qua%p}
 			nom="[${qua}p] ${titre}"
 		fi
-		if [ ! -e "$path"/"$nom".$ext ]
+		if [ $ext == "torrent" ]
 		then
-			wget -O "$path"/"$nom".$ext $lien
+			transmission-cli $lien -w "$path"/"$nom".$ext -ep -D
 		else
-			echo -e "${BLUE}${BOLD}==> Reprise du téléchargement${NC}${NORMAL}"
-			wget -c -O "$path"/"$nom".$ext $lien
+			if [ ! -e "$path"/"$nom".$ext ]
+			then
+				wget -O "$path"/"$nom".$ext $lien
+			else
+				echo -e "${LIGHTBLUE}${BOLD}==> Reprise du téléchargement${NC}${NORMAL}"
+				wget -c -O "$path"/"$nom".$ext $lien
+			fi
 		fi
-		echo -e "${BOLD}${BLUE}==> Téléchargement terminé${NC}${NORMAL}"
+		echo -e "${BOLD}${LIGHTBLUE}==> Téléchargement terminé${NC}${NORMAL}"
 		if [ $ext = "rar" ] || [ $ext = "zip" ]
 		then
-			echo -e "${BOLD}${BLUE}==> Dézippage du fichier...${NC}${NORMAL}"
+			echo -e "${BOLD}${LIGHTBLUE}==> Dézippage du fichier...${NC}${NORMAL}"
 			if [ $ext = "rar" ]
 			then
-				unrar t "$path"/$nom.$ext
-				unrar l "$path"/$nom.$ext
-				unrar e "$path"/$nom.$ext "$path"/
+				unrar t "$path"/"$nom".$ext
+				unrar l "$path"/"$nom".$ext
+				unrar e "$path"/"$nom".$ext "$path"/
 			else
 				if [ $ext = "zip" ]
 				then
-					unzip -t "$path"/$nom.$ext
-					unzip -l "$path"/$nom.$ext
-					unzip "$path"/$nom.$ext -d ""$path"/"
+					unzip -t "$path"/"$nom".$ext
+					unzip -l "$path"/"$nom".$ext
+					unzip "$path"/"$nom".$ext -d "$path"/
 				fi
 			fi
-			echo -e "${BOLD}${BLUE}==> Extraction terminée${NC}${NORMAL}"
-			rm "$path"/$nom.$ext
+			echo -e "${BOLD}${LIGHTBLUE}==> Extraction terminée${NC}${NORMAL}"
+			rm "$path"/"$nom".$ext
 			ls -l "$path" | grep "$nom.$ext"
 			if [ $? -eq 0 ]
 			then
-				echo -e "${BOLD}${BLUE}==> Vous pouvez supprimer $nom.$ext manuellement${NC}${NORMAL}"
+				echo -e "${BOLD}${LIGHTBLUE}==> Vous pouvez supprimer "$nom.$ext" manuellement${NC}${NORMAL}"
 			else
-				echo -e "${BOLD}${BLUE}==> $nom.$ext a été correctement extrait puis supprimé${NC}${NORMAL}"
+				echo -e "${BOLD}${LIGHTBLUE}==> "$nom.$ext" a été correctement extrait puis supprimé${NC}${NORMAL}"
 			fi
 			ls -l "$path" | grep ".mkv"
 			if [ $? -eq 0 ]
@@ -81,9 +91,10 @@ else
 				ext="mkv"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
+				$qua=${qua%p}
 				nom="[${qua}p] ${titre}"
-				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
-				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
+				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
+				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
 			ls -l "$path" | grep ".avi"
 			if [ $? -eq 0 ]
@@ -91,9 +102,10 @@ else
 				ext="avi"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
+				$qua=${qua%p}
 				nom="[${qua}p] ${titre}"
-				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
-				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
+				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
+				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
 			ls -l "$path" | grep ".mp4"
 			if [ $? -eq 0 ]
@@ -101,16 +113,17 @@ else
 				ext="mp4"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
+				$qua=${qua%p}
 				nom="[${qua}p] ${titre}"
-				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
-				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
+				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
+				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
 		fi
-		echo -e "${BOLD}${BLUE}==> Fichier téléchargé dans \"${path}\" :${NC}${NORMAL}"
+		echo -e "${BOLD}${LIGHTBLUE}==> Fichier téléchargé dans \"${path}\" :${NC}${NORMAL}"
 		ls "$path" | grep "$titre.$ext"
 		if [ "$path" != ~ ]
 		then
-			echo -e "${BOLD}${BLUE}==> Le fichier apparaîtra dans Plex dans quelques secondes${NC}${NORMAL}"
+			echo -e "${BOLD}${LIGHTBLUE}==> Le fichier apparaîtra dans Plex dans quelques secondes${NC}${NORMAL}"
 		fi
 	else
     	    echo -e "Veuillez entrer un lien en argument"
