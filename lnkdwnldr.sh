@@ -22,8 +22,8 @@ else
 		echo -e "${YELLOW}============================================================${NORMAL}"
 		echo -e "${YELLOW}>> Lien reçu : ${BOLD}${lien}${NORMAL}${NC}"
 		echo -e "${YELLOW}============================================================${NC}"
-		Davail=$(df --output=avail -kh $path | tail -n +2)
-		Dtotal=$(df --output=size -kh $path | tail -n +2)
+		Davail=$(df --output=avail -kh "$path" | tail -n +2)
+		Dtotal=$(df --output=size -kh "$path" | tail -n +2)
 		Lavail=$(df --output=avail -kh / | tail -n +2)
 		Ltotal=$(df --output=size -kh / | tail -n +2)
 		echo -e "${YELLOW}Mémoire : ${BOLD}${Lavail//[[:blank:]]/}${NORMAL}${YELLOW} libres sur ${BOLD}${Ltotal//[[:blank:]]/}${NORMAL}"
@@ -42,12 +42,12 @@ else
 			read -r qua
 			nom="[${qua}p] ${titre}"
 		fi
-		if [ ! -e $path/"$nom".$ext ]
+		if [ ! -e "$path"/"$nom".$ext ]
 		then
-			wget -O $path/"$nom".$ext $lien
+			wget -O "$path"/"$nom".$ext $lien
 		else
 			echo -e "${BLUE}${BOLD}==> Reprise du téléchargement${NC}${NORMAL}"
-			wget -c -O $path/"$nom".$ext $lien
+			wget -c -O "$path"/"$nom".$ext $lien
 		fi
 		echo -e "${BOLD}${BLUE}==> Téléchargement terminé${NC}${NORMAL}"
 		if [ $ext = "rar" ] || [ $ext = "zip" ]
@@ -55,60 +55,60 @@ else
 			echo -e "${BOLD}${BLUE}==> Dézippage du fichier...${NC}${NORMAL}"
 			if [ $ext = "rar" ]
 			then
-				unrar t $path/$nom.$ext
-				unrar l $path/$nom.$ext
-				unrar e $path/$nom.$ext $path/
+				unrar t "$path"/$nom.$ext
+				unrar l "$path"/$nom.$ext
+				unrar e "$path"/$nom.$ext "$path"/
 			else
 				if [ $ext = "zip" ]
 				then
-					unzip -t $path/$nom.$ext
-					unzip -l $path/$nom.$ext
-					unzip $path/$nom.$ext -d "$path/"
+					unzip -t "$path"/$nom.$ext
+					unzip -l "$path"/$nom.$ext
+					unzip "$path"/$nom.$ext -d ""$path"/"
 				fi
 			fi
 			echo -e "${BOLD}${BLUE}==> Extraction terminée${NC}${NORMAL}"
-			rm $path/$nom.$ext
-			ls -l $path | grep "$nom.$ext"
+			rm "$path"/$nom.$ext
+			ls -l "$path" | grep "$nom.$ext"
 			if [ $? -eq 0 ]
 			then
 				echo -e "${BOLD}${BLUE}==> Vous pouvez supprimer $nom.$ext manuellement${NC}${NORMAL}"
 			else
 				echo -e "${BOLD}${BLUE}==> $nom.$ext a été correctement extrait puis supprimé${NC}${NORMAL}"
 			fi
-			ls -l $path | grep ".mkv"
+			ls -l "$path" | grep ".mkv"
 			if [ $? -eq 0 ]
 			then
 				ext="mkv"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				nom="[${qua}p] ${titre}"
-				mv $path/*.$ext /mnt/library/Films/$nom.$ext
+				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
 				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
-			ls -l $path | grep ".avi"
+			ls -l "$path" | grep ".avi"
 			if [ $? -eq 0 ]
 			then
 				ext="avi"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				nom="[${qua}p] ${titre}"
-				mv $path/*.$ext /mnt/library/Films/$nom.$ext
+				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
 				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
-			ls -l $path | grep ".mp4"
+			ls -l "$path" | grep ".mp4"
 			if [ $? -eq 0 ]
 			then
 				ext="mp4"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				nom="[${qua}p] ${titre}"
-				mv $path/*.$ext /mnt/library/Films/$nom.$ext
+				mv "$path"/*.$ext /mnt/library/Films/$nom.$ext
 				echo -e "${BOLD}${BLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
 		fi
 		echo -e "${BOLD}${BLUE}==> Fichier téléchargé dans \"${path}\" :${NC}${NORMAL}"
-		ls $path | grep "$titre.$ext"
-		if [ $path != ~ ]
+		ls "$path" | grep "$titre.$ext"
+		if [ "$path" != ~ ]
 		then
 			echo -e "${BOLD}${BLUE}==> Le fichier apparaîtra dans Plex dans quelques secondes${NC}${NORMAL}"
 		fi
