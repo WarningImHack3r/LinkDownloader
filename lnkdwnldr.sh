@@ -39,7 +39,7 @@ else
 		fi
 		echo -e -n ">> Précisez l'extension de fichier : "
 		read -r ext
-		if [[ $ext == *"."*]]
+		if [[ $ext == *"."* ]]
 		then
 			$ext=${$ext/"."/""}
 		fi
@@ -50,7 +50,7 @@ else
 		else
 			echo -e -n ">> Quelle est la hauteur de trame du film ? "
 			read -r qua
-			if [[ $qua == *"p"*]]
+			if [[ $qua == *"p"* ]]
 			then
 				$qua=${qua%p}
 			fi
@@ -100,7 +100,7 @@ else
 				ext="mkv"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				if [[ $qua == *"p"*]]
+				if [[ $qua == *"p"* ]]
 				then
 					$qua=${qua%p}
 				fi
@@ -114,7 +114,7 @@ else
 				ext="avi"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				if [[ $qua == *"p"*]]
+				if [[ $qua == *"p"* ]]
 				then
 					$qua=${qua%p}
 				fi
@@ -128,7 +128,7 @@ else
 				ext="mp4"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
-				if [[ $qua == *"p"*]]
+				if [[ $qua == *"p"* ]]
 				then
 					$qua=${qua%p}
 				fi
