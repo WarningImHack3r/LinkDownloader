@@ -33,7 +33,7 @@ else
 		echo -e "${YELLOW}============================================================${NC}"
 		echo -e -n ">> Entrez le nom pour renommer le fichier : "
 		read -r titre
-		if [ $titre == *"."* ]
+		if [[ $titre == *"."* ]]
 		then
 			$titre=${titre%.*}
 		fi
