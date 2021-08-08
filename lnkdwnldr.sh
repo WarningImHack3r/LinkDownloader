@@ -1,11 +1,12 @@
+#!/bin/sh
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 NC='\033[0m'
 RED='\033[0;31m'
-ORANGE='\033[0;33m'
+# ORANGE='\033[0;33m'
 YELLOW='\033[1;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
+# GREEN='\033[0;32m'
+# BLUE='\033[0;34m'
 LIGHTBLUE='\033[1;34m'
 
 if [ $# -ne 1 ]
@@ -35,13 +36,13 @@ else
 		read -r titre
 		if [[ $titre == *"."* ]]
 		then
-			$titre=${titre%.*}
+			titre=${titre%.*}
 		fi
 		echo -e -n ">> Précisez l'extension de fichier : "
 		read -r ext
 		if [[ $ext == *"."* ]]
 		then
-			$ext=${$ext/"."/""}
+			ext=${$ext/"."/""}
 		fi
 		if [ $ext != "mkv" ] && [ $ext != "avi" ] && [ $ext != "mp4" ] && [ $ext != "torrent" ]
 		then
@@ -52,20 +53,20 @@ else
 			read -r qua
 			if [[ $qua == *"p"* ]]
 			then
-				$qua=${qua%p}
+				qua=${qua%p}
 			fi
 			nom="[${qua}p] ${titre}"
 		fi
 		if [ $ext == "torrent" ]
 		then
-			transmission-cli $lien -w "$path"/"$nom".$ext -ep -D
+			transmission-cli "$lien" -w "$path"/"$nom".$ext -ep -D
 		else
 			if [ ! -e "$path"/"$nom".$ext ]
 			then
-				wget -O "$path"/"$nom".$ext $lien
+				wget -O "$path"/"$nom".$ext "$lien"
 			else
 				echo -e "${LIGHTBLUE}${BOLD}==> Reprise du téléchargement${NC}${NORMAL}"
-				wget -c -O "$path"/"$nom".$ext $lien
+				wget -c -O "$path"/"$nom".$ext "$lien"
 			fi
 		fi
 		echo -e "${BOLD}${LIGHTBLUE}==> Téléchargement terminé${NC}${NORMAL}"
@@ -87,50 +88,47 @@ else
 			fi
 			echo -e "${BOLD}${LIGHTBLUE}==> Extraction terminée${NC}${NORMAL}"
 			rm "$path"/"$nom".$ext
-			ls -l "$path" | grep "$nom.$ext"
-			if [ $? -eq 0 ]
+			if ls -l "$path/$nom.$ext"
 			then
-				echo -e "${BOLD}${LIGHTBLUE}==> Vous pouvez supprimer "$nom.$ext" manuellement${NC}${NORMAL}"
+				echo -e "${BOLD}${LIGHTBLUE}==> Vous pouvez supprimer ""$nom".$ext" manuellement${NC}${NORMAL}"
 			else
-				echo -e "${BOLD}${LIGHTBLUE}==> "$nom.$ext" a été correctement extrait puis supprimé${NC}${NORMAL}"
+				echo -e "${BOLD}${LIGHTBLUE}==> ""$nom".$ext" a été correctement extrait puis supprimé${NC}${NORMAL}"
 			fi
-			ls -l "$path" | grep ".mkv"
-			if [ $? -eq 0 ]
+			if ls -l "$path/*.mkv"
 			then
 				ext="mkv"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				if [[ $qua == *"p"* ]]
 				then
-					$qua=${qua%p}
+					qua=${qua%p}
 				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
 				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
-			ls -l "$path" | grep ".avi"
-			if [ $? -eq 0 ]
+			if ls -l "$path/*.avi"
 			then
 				ext="avi"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				if [[ $qua == *"p"* ]]
 				then
-					$qua=${qua%p}
+					qua=${qua%p}
 				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
 				echo -e "${BOLD}${LIGHTBLUE}==> Le film .$ext extrait a bien été déplacé dans le dossier Films${NC}${NORMAL}"
 			fi
-			ls -l "$path" | grep ".mp4"
-			if [ $? -eq 0 ]
+			
+			if ls -l "$path/*.mp4"
 			then
 				ext="mp4"
 				echo -e -n ">> Quelle est la hauteur de trame du film ? "
 				read -r qua
 				if [[ $qua == *"p"* ]]
 				then
-					$qua=${qua%p}
+					qua=${qua%p}
 				fi
 				nom="[${qua}p] ${titre}"
 				mv "$path"/*.$ext "$filmPath"/"$nom".$ext
@@ -138,12 +136,12 @@ else
 			fi
 		fi
 		echo -e "${BOLD}${LIGHTBLUE}==> Fichier téléchargé dans \"${path}\" :${NC}${NORMAL}"
-		ls "$path" | grep "$titre.$ext"
+		ls "$path/$titre.$ext"
 		if [ "$path" != ~ ]
 		then
 			echo -e "${BOLD}${LIGHTBLUE}==> Le fichier apparaîtra dans Plex dans quelques secondes${NC}${NORMAL}"
 		fi
 	else
-    	    echo -e "Veuillez entrer un lien en argument"
+    	echo -e "Veuillez entrer un lien en argument"
     fi
 fi
